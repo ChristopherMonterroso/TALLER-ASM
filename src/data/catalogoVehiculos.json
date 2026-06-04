@@ -1,0 +1,114 @@
+[
+  {
+    "marca": "Toyota",
+    "lineas": ["Corolla", "Camry", "RAV4", "Hilux", "Land Cruiser", "Fortuner", "Yaris", "Prius", "Avalon", "4Runner", "Tacoma", "Tundra", "Highlander", "Sienna", "Venza", "CH-R"]
+  },
+  {
+    "marca": "Chevrolet",
+    "lineas": ["Spark", "Aveo", "Cruze", "Malibu", "Camaro", "Colorado", "Silverado", "Traverse", "Equinox", "Trax", "Trailblazer", "Captiva", "Tahoe", "Suburban", "Express", "Blazer"]
+  },
+  {
+    "marca": "Nissan",
+    "lineas": ["Sentra", "Altima", "Maxima", "Versa", "March", "Tiida", "Frontier", "Navara", "Pathfinder", "X-Trail", "Murano", "Rogue", "Kicks", "Juke", "Armada", "Titan"]
+  },
+  {
+    "marca": "Honda",
+    "lineas": ["Civic", "Accord", "CR-V", "HR-V", "Pilot", "Ridgeline", "Odyssey", "Fit", "Jazz", "City", "Passport", "Insight"]
+  },
+  {
+    "marca": "Ford",
+    "lineas": ["Fiesta", "Focus", "Fusion", "Mustang", "F-150", "F-250", "Ranger", "Explorer", "Expedition", "Escape", "Edge", "Bronco", "EcoSport", "Maverick", "Transit"]
+  },
+  {
+    "marca": "Hyundai",
+    "lineas": ["Accent", "Elantra", "Sonata", "Tucson", "Santa Fe", "Creta", "Kona", "Venue", "Ioniq", "Genesis", "Palisade", "i10", "i20", "i30"]
+  },
+  {
+    "marca": "Kia",
+    "lineas": ["Rio", "Cerato", "Forte", "Stinger", "Sportage", "Sorento", "Telluride", "Seltos", "Soul", "Carnival", "Stonic", "Niro", "EV6"]
+  },
+  {
+    "marca": "Volkswagen",
+    "lineas": ["Gol", "Polo", "Golf", "Jetta", "Passat", "Tiguan", "Touareg", "T-Cross", "T-Roc", "Amarok", "Caddy", "Transporter"]
+  },
+  {
+    "marca": "Mazda",
+    "lineas": ["Mazda2", "Mazda3", "Mazda6", "CX-3", "CX-30", "CX-5", "CX-9", "MX-5", "BT-50"]
+  },
+  {
+    "marca": "Mitsubishi",
+    "lineas": ["Mirage", "Lancer", "Galant", "Eclipse", "Outlander", "ASX", "L200", "Montero", "Pajero", "Eclipse Cross"]
+  },
+  {
+    "marca": "Suzuki",
+    "lineas": ["Alto", "Swift", "Vitara", "Jimny", "Grand Vitara", "Ertiga", "Baleno", "S-Cross", "Ignis", "Carry"]
+  },
+  {
+    "marca": "Isuzu",
+    "lineas": ["D-Max", "MU-X", "Trooper", "Rodeo", "NPR", "NQR", "FRR"]
+  },
+  {
+    "marca": "Jeep",
+    "lineas": ["Wrangler", "Cherokee", "Grand Cherokee", "Compass", "Renegade", "Gladiator", "Commander"]
+  },
+  {
+    "marca": "Ram",
+    "lineas": ["1500", "2500", "3500", "700", "ProMaster", "Dakota"]
+  },
+  {
+    "marca": "Dodge",
+    "lineas": ["Charger", "Challenger", "Durango", "Journey", "Caravan", "Ram"]
+  },
+  {
+    "marca": "Subaru",
+    "lineas": ["Impreza", "Legacy", "Outback", "Forester", "Crosstrek", "Ascent", "BRZ", "WRX"]
+  },
+  {
+    "marca": "BMW",
+    "lineas": ["Serie 1", "Serie 2", "Serie 3", "Serie 4", "Serie 5", "Serie 6", "Serie 7", "X1", "X2", "X3", "X4", "X5", "X6", "M3", "M5"]
+  },
+  {
+    "marca": "Mercedes-Benz",
+    "lineas": ["Clase A", "Clase B", "Clase C", "Clase E", "Clase S", "GLA", "GLB", "GLC", "GLE", "GLS", "Sprinter", "Vito", "AMG"]
+  },
+  {
+    "marca": "Audi",
+    "lineas": ["A1", "A3", "A4", "A5", "A6", "A7", "A8", "Q2", "Q3", "Q5", "Q7", "Q8", "TT", "R8"]
+  },
+  {
+    "marca": "Renault",
+    "lineas": ["Logan", "Sandero", "Clio", "Megane", "Duster", "Koleos", "Captur", "Kangoo", "Master", "Fluence"]
+  },
+  {
+    "marca": "Peugeot",
+    "lineas": ["206", "207", "208", "301", "308", "408", "508", "2008", "3008", "5008", "Partner", "Expert", "Boxer"]
+  },
+  {
+    "marca": "Fiat",
+    "lineas": ["Palio", "Siena", "Punto", "500", "Bravo", "Linea", "Argo", "Cronos", "Pulse", "Fastback", "Ducato", "Strada"]
+  },
+  {
+    "marca": "Ssangyong",
+    "lineas": ["Tivoli", "Korando", "Actyon", "Rexton", "Musso"]
+  },
+  {
+    "marca": "Great Wall",
+    "lineas": ["Wingle", "Hover", "Haval H6", "Haval Jolion"]
+  },
+  {
+    "marca": "Chery",
+    "lineas": ["QQ", "A1", "Arrizo 3", "Arrizo 5", "Arrizo 6", "Tiggo 2", "Tiggo 4", "Tiggo 5x", "Tiggo 7", "Tiggo 8"]
+  },
+  {
+    "marca": "BYD",
+    "lineas": ["F3", "F6", "S5", "Tang", "Han", "Dolphin", "Seal", "Atto 3"]
+  },
+  {
+    "marca": "JAC",
+    "lineas": ["J3", "J4", "J5", "S1", "S3", "S4", "S5", "T6", "T8"]
+  },
+  {
+    "marca": "Otro",
+    "lineas": ["Otro"]
+  }
+]
