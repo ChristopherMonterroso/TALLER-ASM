@@ -166,7 +166,7 @@ const NuevaOrden = () => {
             </div>
           </div>
           <div className="form-group">
-            <label className="form-label">Falla Reportada por el Cliente</label>
+            <label className="form-label">Falla Reportada</label>
             <textarea name="fallaReportada" value={form.fallaReportada} onChange={handleChange}
               className="form-textarea" placeholder="Describe la falla o síntoma reportado por el cliente..." rows={3} />
           </div>

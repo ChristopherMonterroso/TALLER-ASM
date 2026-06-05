@@ -48,7 +48,7 @@ const Login = () => {
                 id="login-username"
                 type="text"
                 className="form-input"
-                placeholder="tu.nombre"
+                placeholder=""
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 autoComplete="username"

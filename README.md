@@ -167,7 +167,7 @@ service cloud.firestore {
      ```bash
      node --experimental-vm-modules scripts/createAdmin.mjs
      ```
-   * *Credenciales del Admin inicial:* `admin@asm.com` / `Admin1234!` (Se recomienda cambiar la contraseña inmediatamente después del primer login).
+    * *Credenciales del Admin inicial:* Las credenciales predeterminadas se configuran al correr el script de inicialización o mediante la pantalla de configuración. (Asegúrese de cambiar la contraseña predeterminada inmediatamente después del primer inicio de sesión).
 
 ---
 

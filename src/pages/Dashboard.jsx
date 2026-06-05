@@ -70,7 +70,7 @@ const Dashboard = () => {
         </div>
         {recentOrdenes.length > 0 ? (
           <div className="table-wrapper">
-            <table className="table">
+            <table className="table responsive-table">
               <thead>
                 <tr>
                   <th>No.</th><th>Cliente</th><th>Vehículo</th><th>Estado</th><th>Total</th><th></th>
@@ -79,21 +79,21 @@ const Dashboard = () => {
               <tbody>
                 {recentOrdenes.map(o => (
                   <tr key={o.id}>
-                    <td><span className="font-mono text-muted">#{String(o.noOrden || '').padStart(4, '0')}</span></td>
-                    <td><span style={{ fontWeight: 600 }}>{o.clienteNombre}</span></td>
-                    <td>
+                    <td data-label="No."><span className="font-mono text-muted">#{String(o.noOrden || '').padStart(4, '0')}</span></td>
+                    <td data-label="Cliente"><span style={{ fontWeight: 600 }}>{o.clienteNombre}</span></td>
+                    <td data-label="Vehículo">
                       <span style={{ color: 'var(--color-text-muted)', fontSize: 13 }}>
                         {o.vehiculoData?.marca} {o.vehiculoData?.linea} {o.vehiculoData?.modelo}
                         {o.vehiculoData?.placa ? ` — ${o.vehiculoData.placa}` : ''}
                       </span>
                     </td>
-                    <td>
+                    <td data-label="Estado">
                       <span className={`badge badge-${statusColor[o.estado] || 'muted'}`}>
                         {statusLabel[o.estado] || o.estado}
                       </span>
                     </td>
-                    <td><span style={{ fontWeight: 700, color: 'var(--color-accent)' }}>Q{Number(o.total || 0).toFixed(2)}</span></td>
-                    <td><Link to={`/ordenes/${o.id}`} className="btn btn-ghost btn-sm">Ver</Link></td>
+                    <td data-label="Total"><span style={{ fontWeight: 700, color: 'var(--color-accent)' }}>Q{Number(o.total || 0).toFixed(2)}</span></td>
+                    <td data-label="Acciones"><Link to={`/ordenes/${o.id}`} className="btn btn-ghost btn-sm">Ver</Link></td>
                   </tr>
                 ))}
               </tbody>
