@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getRevisionById, getConfig } from '../../firebase/firestore';
+import { getRevisionById, getClienteById, getConfig } from '../../firebase/firestore';
 import { useToast } from '../../context/ToastContext';
 import generarRevisionPDF from '../../utils/pdf/pdfRevision';
 
@@ -18,8 +18,24 @@ const RevisionDetalle = () => {
   const handlePDF = async () => {
     setGeneratingPDF(true);
     try {
-      const [config, company] = await Promise.all([getConfig('appearance'), getConfig('company')]);
-      await generarRevisionPDF(revision, company || {}, config?.logoUrl);
+      const [appearance, company] = await Promise.all([getConfig('appearance'), getConfig('company')]);
+
+      // Datos frescos del cliente (por si actualizaron NIT o dirección)
+      let clienteExtra = {
+        nit: revision.clienteNit || '',
+        direccion: revision.clienteDireccion || '',
+      };
+      if (revision.clienteId) {
+        const clienteFresh = await getClienteById(revision.clienteId);
+        if (clienteFresh) {
+          clienteExtra = {
+            nit: clienteFresh.nit || '',
+            direccion: clienteFresh.direccion || '',
+          };
+        }
+      }
+
+      await generarRevisionPDF(revision, company || {}, appearance?.logoUrl, clienteExtra);
     } catch (err) { toast.error('Error al generar PDF'); console.error(err); }
     setGeneratingPDF(false);
   };

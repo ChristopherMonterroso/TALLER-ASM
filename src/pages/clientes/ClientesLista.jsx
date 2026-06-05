@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import Modal from '../../components/ui/Modal';
+import { usePagination } from '../../hooks/usePagination';
+import Pagination from '../../components/ui/Pagination';
 
 const ClienteForm = ({ initial = {}, onSubmit, onCancel, loading }) => {
-  const [form, setForm] = useState({ nombre: '', telefono: '', nit: '', correo: '', ...initial });
+  const [form, setForm] = useState({ nombre: '', telefono: '', nit: '', correo: '', direccion: '', ...initial });
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -51,6 +53,10 @@ const ClienteForm = ({ initial = {}, onSubmit, onCancel, loading }) => {
           <input name="correo" value={form.correo} onChange={handleChange} className="form-input" type="email" placeholder="correo@ejemplo.com" />
         </div>
       </div>
+      <div className="form-group">
+        <label className="form-label">Dirección <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>(opcional)</span></label>
+        <input name="direccion" value={form.direccion} onChange={handleChange} className="form-input" placeholder="Zona, colonia, municipio..." />
+      </div>
       <div className="modal-footer" style={{ padding: '16px 0 0', border: 'none' }}>
         <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancelar</button>
         <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
@@ -83,6 +89,8 @@ const ClientesLista = () => {
     (c.telefono || '').includes(search) ||
     (c.nit || '').includes(search)
   );
+
+  const { page, totalPages, paginated, goTo, next, prev } = usePagination(filtered, 20);
 
   const handleSave = async (form) => {
     setSaving(true);
@@ -120,46 +128,48 @@ const ClientesLista = () => {
       <div className="card">
         <div className="card-header">
           <div className="search-bar" style={{ maxWidth: '100%', flex: 1 }}>
-            
             <input
               className="form-input"
               style={{ paddingLeft: 36 }}
               placeholder="Buscar por nombre, teléfono o NIT..."
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => { setSearch(e.target.value); goTo(1); }}
             />
           </div>
         </div>
         {loading ? <div className="spinner" /> : (
           filtered.length > 0 ? (
-            <div className="table-wrapper">
-              <table className="table responsive-table">
-                <thead>
-                  <tr><th>Nombre</th><th>Teléfono</th><th>NIT</th><th>Correo</th><th></th></tr>
-                </thead>
-                <tbody>
-                  {filtered.map(c => (
-                    <tr key={c.id}>
-                      <td data-label="Nombre"><span style={{ fontWeight: 600 }}>{c.nombre}</span></td>
-                      <td data-label="Teléfono">{c.telefono}</td>
-                      <td data-label="NIT">{c.nit || <span className="text-muted">—</span>}</td>
-                      <td data-label="Correo">{c.correo || <span className="text-muted">—</span>}</td>
-                      <td data-label="Acciones">
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/clientes/${c.id}`)}>Ver</button>
-                          {canWrite() && (
-                            <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(c); setShowModal(true); }}>Editar</button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <>
+              <div className="table-wrapper">
+                <table className="table responsive-table">
+                  <thead>
+                    <tr><th>Nombre</th><th>Teléfono</th><th>NIT</th><th>Correo</th><th /></tr>
+                  </thead>
+                  <tbody>
+                    {paginated.map(c => (
+                      <tr key={c.id}>
+                        <td data-label="Nombre"><span style={{ fontWeight: 600 }}>{c.nombre}</span></td>
+                        <td data-label="Teléfono">{c.telefono}</td>
+                        <td data-label="NIT">{c.nit || <span className="text-muted">—</span>}</td>
+                        <td data-label="Correo">{c.correo || <span className="text-muted">—</span>}</td>
+                        <td data-label="Acciones">
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/clientes/${c.id}`)}>Ver</button>
+                            {canWrite() && (
+                              <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(c); setShowModal(true); }}>Editar</button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Pagination page={page} totalPages={totalPages} total={filtered.length} pageSize={20}
+                onNext={next} onPrev={prev} onGoTo={goTo} />
+            </>
           ) : (
             <div className="empty-state">
-              
               <h3>{search ? 'Sin resultados' : 'Sin clientes'}</h3>
               <p>{search ? 'Prueba con otro término' : 'Agrega tu primer cliente'}</p>
             </div>

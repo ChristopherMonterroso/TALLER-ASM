@@ -2,27 +2,21 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { buildHeader, buildVehicleBlock, buildFirma } from './pdfBase';
 
-const DEFAULT_DESCRIPCION = `Se realizó inspección general del vehículo verificando los siguientes sistemas:
-
-• Sistema de frenos: revisión de pastillas, discos y nivel de líquido de frenos.
-• Sistema de motor: revisión de niveles de aceite, refrigerante y correa de distribución.
-• Sistema eléctrico: revisión de batería, luces y sistema de arranque.
-• Sistema de suspensión: revisión de amortiguadores, rótulas y terminales.
-• Sistema de dirección: revisión de caja de dirección y cremallera.
-• Neumáticos: revisión de presión y desgaste.
-
-Observaciones generales: (completar según revisión).`;
+const DEFAULT_DESCRIPCION = `En cumplimiento con la solicitud de revisión del vehículo descrito anteriormente, se llevó a cabo la revisión en las instalaciones de Auto Servicios Monterroso, al evaluar el estado del vehículo se ha determinado que se encuentra en buenas condiciones.`;
 
 export { DEFAULT_DESCRIPCION };
 
-const generarRevisionPDF = async (revision, company = {}, logoUrl = null) => {
+const generarRevisionPDF = async (revision, company = {}, logoUrl = null, clienteExtra = {}) => {
   const doc = new jsPDF();
   const pageW = doc.internal.pageSize.width;
 
   let y = await buildHeader(doc, company, logoUrl, 'REVISIÓN DE VEHÍCULO', `No. ${String(revision.noRevision || '').padStart(4, '0')}`);
 
-  // Vehicle block
-  y = buildVehicleBlock(doc, revision.clienteNombre, revision.vehiculoData, y);
+  // Vehicle block — ahora con NIT y dirección frescos
+  y = buildVehicleBlock(doc, revision.clienteNombre, revision.vehiculoData, y, {
+    nit: clienteExtra.nit || revision.clienteNit || '',
+    direccion: clienteExtra.direccion || revision.clienteDireccion || '',
+  });
 
   // Descripcion
   doc.setFont('helvetica', 'bold');

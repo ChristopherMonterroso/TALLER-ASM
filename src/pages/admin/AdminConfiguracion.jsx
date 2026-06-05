@@ -4,6 +4,7 @@ import { uploadLogo } from '../../firebase/storage';
 import { useTheme, THEMES } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
 import logoDefault from '../../assets/logo-default.png';
+import { DEFAULT_TERMINOS } from '../../data/terminosOrden';
 
 const THEME_INFO = {
   'steel-dark': { name: 'Steel Dark', colors: ['#0F172A', '#1E293B', '#3B82F6', '#F59E0B'] },
@@ -26,6 +27,8 @@ const AdminConfiguracion = () => {
   const [logoUrl, setLogoUrl] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
+  const [terminos, setTerminos] = useState(DEFAULT_TERMINOS);
+  const [savingTerminos, setSavingTerminos] = useState(false);
   const [savingCompany, setSavingCompany] = useState(false);
   const [savingLogo, setSavingLogo] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,6 +37,7 @@ const AdminConfiguracion = () => {
     Promise.all([getConfig('company'), getConfig('appearance')]).then(([comp, app]) => {
       if (comp) setCompany(comp);
       if (app?.logoUrl) setLogoUrl(app.logoUrl);
+      if (app?.terminosOrden) setTerminos(app.terminosOrden);
       setLoading(false);
     });
   }, []);
@@ -239,6 +243,70 @@ const AdminConfiguracion = () => {
             </button>
           </div>
         </form>
+      </div>
+      {/* Términos de la orden */}
+      <div className="card">
+        <div className="card-header"><h2 className="card-title">Términos de la Orden de Trabajo</h2></div>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: 13, marginBottom: 16 }}>
+          Estos términos aparecen al pie de la firma del cliente en cada PDF de orden de trabajo.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+          {terminos.map((t, i) => (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 36px', gap: 8, alignItems: 'flex-start' }}>
+              <textarea
+                className="form-textarea"
+                rows={2}
+                value={t}
+                onChange={e => {
+                  const next = [...terminos];
+                  next[i] = e.target.value;
+                  setTerminos(next);
+                }}
+                style={{ fontSize: 13 }}
+              />
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => setTerminos(terminos.filter((_, j) => j !== i))}
+                style={{ width: 36, height: 36, padding: 0 }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setTerminos([...terminos, ''])}
+          >
+            + Agregar Término
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => setTerminos([...DEFAULT_TERMINOS])}
+          >
+            Restaurar por defecto
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={savingTerminos}
+            onClick={async () => {
+              setSavingTerminos(true);
+              try {
+                const currentApp = await getConfig('appearance');
+                await setConfig('appearance', { ...currentApp, terminosOrden: terminos });
+                toast.success('Términos guardados');
+              } catch { toast.error('Error al guardar'); }
+              setSavingTerminos(false);
+            }}
+          >
+            {savingTerminos ? 'Guardando...' : 'Guardar Términos'}
+          </button>
+        </div>
       </div>
     </div>
   );

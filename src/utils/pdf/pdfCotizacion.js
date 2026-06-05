@@ -2,14 +2,17 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { buildHeader, buildVehicleBlock, buildRepuestosTable, buildFirma, formatQ } from './pdfBase';
 
-const generarCotizacionPDF = async (cotizacion, company = {}, logoUrl = null) => {
+const generarCotizacionPDF = async (cotizacion, company = {}, logoUrl = null, clienteExtra = {}) => {
   const doc = new jsPDF();
   const pageW = doc.internal.pageSize.width;
 
   let y = await buildHeader(doc, company, logoUrl, 'COTIZACIÓN', `No. ${String(cotizacion.noCotizacion || '').padStart(4, '0')}`);
 
-  // Vehicle block
-  y = buildVehicleBlock(doc, cotizacion.clienteNombre, cotizacion.vehiculoData, y);
+  // Vehicle block — incluye NIT y dirección frescos
+  y = buildVehicleBlock(doc, cotizacion.clienteNombre, cotizacion.vehiculoData, y, {
+    nit: clienteExtra.nit || cotizacion.clienteNit || '',
+    direccion: clienteExtra.direccion || cotizacion.clienteDireccion || '',
+  });
 
   // Servicios
   if (cotizacion.servicios && cotizacion.servicios.length > 0) {

@@ -3,6 +3,8 @@ import { getInventario, addInventarioItem, updateInventarioItem, deleteInventari
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import Modal from '../../components/ui/Modal';
+import { usePagination } from '../../hooks/usePagination';
+import Pagination from '../../components/ui/Pagination';
 
 const ItemForm = ({ initial = {}, onSubmit, onCancel, loading }) => {
   const [form, setForm] = useState({ nombre: '', marca: '', cantidad: 0, precioUnitario: 0, ...initial });
@@ -78,6 +80,8 @@ const Inventario = () => {
     (i.marca || '').toLowerCase().includes(search.toLowerCase())
   );
 
+  const { page, totalPages, paginated, goTo, next, prev } = usePagination(filtered, 25);
+
   const handleSave = async (form) => {
     setSaving(true);
     try {
@@ -124,41 +128,46 @@ const Inventario = () => {
       <div className="card">
         <div className="card-header">
           <div style={{ flex: 1 }}>
-            <input className="form-input" style={{ paddingLeft: 36, maxWidth: 360 }} placeholder="Buscar por nombre o marca..." value={search} onChange={e => setSearch(e.target.value)} />
+            <input className="form-input" style={{ paddingLeft: 36, maxWidth: 360 }} placeholder="Buscar por nombre o marca..."
+              value={search} onChange={e => { setSearch(e.target.value); goTo(1); }} />
           </div>
         </div>
         {loading ? <div className="spinner" /> : (
           filtered.length > 0 ? (
-            <div className="table-wrapper">
-              <table className="table">
-                <thead>
-                  <tr><th>Nombre</th><th>Marca</th><th>Cantidad</th><th>P. Unitario</th><th>Valor Total</th><th></th></tr>
-                </thead>
-                <tbody>
-                  {filtered.map(item => (
-                    <tr key={item.id}>
-                      <td><span style={{ fontWeight: 600 }}>{item.nombre}</span></td>
-                      <td>{item.marca || <span className="text-muted">—</span>}</td>
-                      <td>
-                        <span className={`badge ${item.cantidad > 5 ? 'badge-success' : item.cantidad > 0 ? 'badge-warning' : 'badge-danger'}`}>
-                          {item.cantidad}
-                        </span>
-                      </td>
-                      <td>Q{Number(item.precioUnitario || 0).toFixed(2)}</td>
-                      <td><span style={{ fontWeight: 600, color: 'var(--color-accent)' }}>Q{(item.cantidad * (item.precioUnitario || 0)).toFixed(2)}</span></td>
-                      <td>
-                        {canWrite() && (
-                          <div style={{ display: 'flex', gap: 6 }}>
-                            <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(item); setShowModal(true); }}>Editar</button>
-                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.id)}>Eliminar</button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <>
+              <div className="table-wrapper">
+                <table className="table responsive-table">
+                  <thead>
+                    <tr><th>Nombre</th><th>Marca</th><th>Cantidad</th><th>P. Unitario</th><th>Valor Total</th><th></th></tr>
+                  </thead>
+                  <tbody>
+                    {paginated.map(item => (
+                      <tr key={item.id}>
+                        <td data-label="Nombre"><span style={{ fontWeight: 600 }}>{item.nombre}</span></td>
+                        <td data-label="Marca">{item.marca || <span className="text-muted">—</span>}</td>
+                        <td data-label="Cantidad">
+                          <span className={`badge ${item.cantidad > 5 ? 'badge-success' : item.cantidad > 0 ? 'badge-warning' : 'badge-danger'}`}>
+                            {item.cantidad}
+                          </span>
+                        </td>
+                        <td data-label="P. Unitario">Q{Number(item.precioUnitario || 0).toFixed(2)}</td>
+                        <td data-label="Valor Total"><span style={{ fontWeight: 600, color: 'var(--color-accent)' }}>Q{(item.cantidad * (item.precioUnitario || 0)).toFixed(2)}</span></td>
+                        <td data-label="Acciones">
+                          {canWrite() && (
+                            <div style={{ display: 'flex', gap: 6 }}>
+                              <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(item); setShowModal(true); }}>Editar</button>
+                              <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Pagination page={page} totalPages={totalPages} total={filtered.length} pageSize={25}
+                onNext={next} onPrev={prev} onGoTo={goTo} />
+            </>
           ) : (
             <div className="empty-state">
               

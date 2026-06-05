@@ -805,3 +805,45 @@ input, select, textarea { font-family: inherit; }
   }
 }
 
+/* ─── Detalle responsive enhancements ────────────────────────────────────────── */
+.detalle-totales {
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .responsive-table tr.table-total-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 0 !important;
+    padding: 12px 0 !important;
+    border: none !important;
+    border-top: 2px solid var(--color-border) !important;
+    background: transparent !important;
+  }
+  .responsive-table tr.table-total-row td {
+    display: inline-block !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+    width: auto !important;
+    text-align: right !important;
+  }
+  .responsive-table tr.table-total-row td::before {
+    content: none !important;
+  }
+}
+@media (max-width: 480px) {
+  .detalle-totales {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+  .page-header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .page-header-actions .form-select,
+  .page-header-actions .btn {
+    width: 100% !important;
+    margin: 0;
+  }
+}
+
+

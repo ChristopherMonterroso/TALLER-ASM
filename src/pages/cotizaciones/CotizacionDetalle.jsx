@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getCotizacionById, updateCotizacion, getConfig } from '../../firebase/firestore';
+import { getCotizacionById, updateCotizacion, getClienteById, getConfig } from '../../firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import generarCotizacionPDF from '../../utils/pdf/pdfCotizacion';
@@ -33,8 +33,16 @@ const CotizacionDetalle = () => {
   const handlePDF = async () => {
     setGeneratingPDF(true);
     try {
-      const [config, company] = await Promise.all([getConfig('appearance'), getConfig('company')]);
-      await generarCotizacionPDF(cotizacion, company || {}, config?.logoUrl);
+      const [appearance, company] = await Promise.all([getConfig('appearance'), getConfig('company')]);
+
+      // Datos frescos del cliente (por si actualizaron NIT o dirección)
+      let clienteExtra = { nit: cotizacion.clienteNit || '', direccion: cotizacion.clienteDireccion || '' };
+      if (cotizacion.clienteId) {
+        const clienteFresh = await getClienteById(cotizacion.clienteId);
+        if (clienteFresh) clienteExtra = { nit: clienteFresh.nit || '', direccion: clienteFresh.direccion || '' };
+      }
+
+      await generarCotizacionPDF(cotizacion, company || {}, appearance?.logoUrl, clienteExtra);
     } catch (err) { toast.error('Error al generar PDF'); console.error(err); }
     setGeneratingPDF(false);
   };
@@ -97,14 +105,14 @@ const CotizacionDetalle = () => {
         <div className="card" style={{ marginBottom: 16 }}>
           <div className="card-header"><h2 className="card-title">Servicios</h2></div>
           <div className="table-wrapper">
-            <table className="table">
+            <table className="table responsive-table">
               <thead><tr><th>#</th><th>Descripción</th><th className="text-right">Precio</th></tr></thead>
               <tbody>
                 {cotizacion.servicios.map((sv, i) => (
                   <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{sv.descripcion}</td>
-                    <td className="text-right">Q{Number(sv.precio || 0).toFixed(2)}</td>
+                    <td data-label="#">{i + 1}</td>
+                    <td data-label="Descripción">{sv.descripcion}</td>
+                    <td data-label="Precio" className="text-right">Q{Number(sv.precio || 0).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -118,17 +126,17 @@ const CotizacionDetalle = () => {
         <div className="card" style={{ marginBottom: 16 }}>
           <div className="card-header"><h2 className="card-title">Repuestos</h2></div>
           <div className="table-wrapper">
-            <table className="table">
+            <table className="table responsive-table">
               <thead><tr><th>#</th><th>Nombre</th><th>Marca</th><th>Cant.</th><th className="text-right">P. Venta</th><th className="text-right">Total</th></tr></thead>
               <tbody>
                 {cotizacion.repuestos.map((r, i) => (
                   <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{r.nombre}</td>
-                    <td>{r.marca || '—'}</td>
-                    <td>{r.cantidad}</td>
-                    <td className="text-right" style={{ color: 'var(--color-accent)', fontWeight: 600 }}>Q{Number(r.precioVenta || r.precioUnitario || 0).toFixed(2)}</td>
-                    <td className="text-right" style={{ fontWeight: 700 }}>Q{((r.precioVenta || r.precioUnitario || 0) * r.cantidad).toFixed(2)}</td>
+                    <td data-label="#">{i + 1}</td>
+                    <td data-label="Nombre">{r.nombre}</td>
+                    <td data-label="Marca">{r.marca || '—'}</td>
+                    <td data-label="Cant.">{r.cantidad}</td>
+                    <td data-label="P. Venta" className="text-right" style={{ color: 'var(--color-accent)', fontWeight: 600 }}>Q{Number(r.precioVenta || r.precioUnitario || 0).toFixed(2)}</td>
+                    <td data-label="Total" className="text-right" style={{ fontWeight: 700 }}>Q{((r.precioVenta || r.precioUnitario || 0) * r.cantidad).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -140,7 +148,7 @@ const CotizacionDetalle = () => {
       {/* Totales */}
       <div className="card">
         <div className="card-header"><h2 className="card-title">Total</h2></div>
-        <div style={{ maxWidth: 300, marginLeft: 'auto' }}>
+        <div className="detalle-totales" style={{ maxWidth: 300, marginLeft: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', color: 'var(--color-text-muted)', borderBottom: '1px solid var(--color-border)' }}>
             <span>Servicios</span><span>Q{totalServicios.toFixed(2)}</span>
           </div>

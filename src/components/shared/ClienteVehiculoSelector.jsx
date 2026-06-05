@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext';
 
 // Compact inline client form
 const ClienteInlineForm = ({ onCreated, onCancel }) => {
-  const [form, setForm] = useState({ nombre: '', telefono: '', nit: '', correo: '' });
+  const [form, setForm] = useState({ nombre: '', telefono: '', nit: '', correo: '', direccion: '' });
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -37,12 +37,16 @@ const ClienteInlineForm = ({ onCreated, onCancel }) => {
       <div className="form-row form-row-2">
         <div className="form-group">
           <label className="form-label">NIT</label>
-          <input className="form-input" value={form.nit} onChange={e => setForm(f => ({ ...f, nit: e.target.value }))} placeholder="NIT (opcional)" />
+          <input className="form-input" value={form.nit} onChange={e => setForm(f => ({ ...f, nit: e.target.value }))} placeholder="CF o NIT" />
         </div>
         <div className="form-group">
           <label className="form-label">Correo</label>
           <input className="form-input" type="email" value={form.correo} onChange={e => setForm(f => ({ ...f, correo: e.target.value }))} placeholder="Correo (opcional)" />
         </div>
+      </div>
+      <div className="form-group">
+        <label className="form-label">Dirección</label>
+        <input className="form-input" value={form.direccion} onChange={e => setForm(f => ({ ...f, direccion: e.target.value }))} placeholder="Dirección (opcional)" />
       </div>
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button type="button" className="btn btn-secondary btn-sm" onClick={onCancel}>Cancelar</button>
@@ -68,7 +72,7 @@ const ClienteVehiculoSelector = ({ onChange, value = {} }) => {
   const [showCreateVehiculo, setShowCreateVehiculo] = useState(false);
   const [loadingVehiculo, setLoadingVehiculo] = useState(false);
   const [manualData, setManualData] = useState({
-    clienteNombre: '', marca: '', linea: '', modelo: '', placa: '', color: '', chasis: ''
+    clienteNombre: '', marca: '', linea: '', modelo: '', placa: '', color: '', chasis: '', nit: '', direccion: ''
   });
   const toast = useToast();
 
@@ -94,21 +98,33 @@ const ClienteVehiculoSelector = ({ onChange, value = {} }) => {
     setSelectedCliente(clienteId);
     setSelectedVehiculo('');
     const c = clientes.find(x => x.id === clienteId);
-    onChange({ clienteId, clienteNombre: c?.nombre || '', vehiculoId: '', vehiculoData: {} });
+    onChange({
+      clienteId, clienteNombre: c?.nombre || '',
+      clienteNit: c?.nit || '', clienteDireccion: c?.direccion || '',
+      vehiculoId: '', vehiculoData: {}
+    });
   };
 
   const handleVehiculoChange = (vehiculoId) => {
     setSelectedVehiculo(vehiculoId);
     const v = vehiculos.find(x => x.id === vehiculoId);
     const c = clientes.find(x => x.id === selectedCliente);
-    onChange({ clienteId: selectedCliente, clienteNombre: c?.nombre || '', vehiculoId, vehiculoData: v || {} });
+    onChange({
+      clienteId: selectedCliente, clienteNombre: c?.nombre || '',
+      clienteNit: c?.nit || '', clienteDireccion: c?.direccion || '',
+      vehiculoId, vehiculoData: v || {}
+    });
   };
 
   const handleClienteCreated = (cliente) => {
     setClientes(prev => [cliente, ...prev]);
     setSelectedCliente(cliente.id);
     setShowCreateCliente(false);
-    onChange({ clienteId: cliente.id, clienteNombre: cliente.nombre, vehiculoId: '', vehiculoData: {} });
+    onChange({
+      clienteId: cliente.id, clienteNombre: cliente.nombre,
+      clienteNit: cliente.nit || '', clienteDireccion: cliente.direccion || '',
+      vehiculoId: '', vehiculoData: {}
+    });
   };
 
   const handleVehiculoCreated = async (vData) => {
@@ -120,7 +136,11 @@ const ClienteVehiculoSelector = ({ onChange, value = {} }) => {
       setSelectedVehiculo(newV.id);
       setShowCreateVehiculo(false);
       const c = clientes.find(x => x.id === selectedCliente);
-      onChange({ clienteId: selectedCliente, clienteNombre: c?.nombre || '', vehiculoId: newV.id, vehiculoData: newV });
+      onChange({
+        clienteId: selectedCliente, clienteNombre: c?.nombre || '',
+        clienteNit: c?.nit || '', clienteDireccion: c?.direccion || '',
+        vehiculoId: newV.id, vehiculoData: newV
+      });
       toast.success('Vehículo agregado');
     } catch { toast.error('Error al crear vehículo'); }
     setLoadingVehiculo(false);
@@ -129,7 +149,11 @@ const ClienteVehiculoSelector = ({ onChange, value = {} }) => {
   const handleManualChange = (e) => {
     const next = { ...manualData, [e.target.name]: e.target.value };
     setManualData(next);
-    onChange({ clienteId: null, clienteNombre: next.clienteNombre, vehiculoId: null, vehiculoData: next });
+    onChange({
+      clienteId: null, clienteNombre: next.clienteNombre,
+      clienteNit: next.nit || '', clienteDireccion: next.direccion || '',
+      vehiculoId: null, vehiculoData: next
+    });
   };
 
   return (
@@ -222,6 +246,16 @@ const ClienteVehiculoSelector = ({ onChange, value = {} }) => {
           <div className="form-group">
             <label className="form-label">Nombre del cliente</label>
             <input className="form-input" name="clienteNombre" value={manualData.clienteNombre} onChange={handleManualChange} placeholder="Nombre" />
+          </div>
+          <div className="form-row form-row-2">
+            <div className="form-group">
+              <label className="form-label">NIT <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>(opcional)</span></label>
+              <input className="form-input" name="nit" value={manualData.nit || ''} onChange={handleManualChange} placeholder="CF o NIT" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Dirección <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>(opcional)</span></label>
+              <input className="form-input" name="direccion" value={manualData.direccion || ''} onChange={handleManualChange} placeholder="Dirección (opcional)" />
+            </div>
           </div>
           <div className="form-row form-row-3">
             <div className="form-group">

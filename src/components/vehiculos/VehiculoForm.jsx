@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import catalogo from '../../data/catalogoVehiculos.json';
+import catalogoOriginal from '../../data/catalogoVehiculos.json';
+
+const catalogo = [...catalogoOriginal]
+  .map(c => ({
+    ...c,
+    lineas: [...c.lineas].sort((a, b) => a.localeCompare(b))
+  }))
+  .sort((a, b) => a.marca.localeCompare(b.marca));
 
 const VehiculoForm = ({ onSubmit, onCancel, initialData = {}, loading }) => {
   const [form, setForm] = useState({

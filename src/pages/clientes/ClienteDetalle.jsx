@@ -41,7 +41,11 @@ const ClienteDetalle = () => {
   };
 
   const openEditCliente = () => {
-    setForm({ nombre: cliente.nombre, telefono: cliente.telefono, nit: cliente.nit || '', correo: cliente.correo || '' });
+    setForm({
+      nombre: cliente.nombre, telefono: cliente.telefono,
+      nit: cliente.nit || '', correo: cliente.correo || '',
+      direccion: cliente.direccion || ''
+    });
     setShowClienteModal(true);
   };
 
@@ -109,6 +113,12 @@ const ClienteDetalle = () => {
             </div>
           ))}
         </div>
+        {cliente.direccion && (
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Dirección</div>
+            <div style={{ fontSize: 15, fontWeight: 500 }}>{cliente.direccion}</div>
+          </div>
+        )}
       </div>
 
       {/* Vehicles */}
@@ -174,12 +184,16 @@ const ClienteDetalle = () => {
           <div className="form-row form-row-2">
             <div className="form-group">
               <label className="form-label">NIT</label>
-              <input className="form-input" value={form.nit || ''} onChange={e => setForm(f => ({ ...f, nit: e.target.value }))} />
+              <input className="form-input" value={form.nit || ''} onChange={e => setForm(f => ({ ...f, nit: e.target.value }))} placeholder="CF o NIT" />
             </div>
             <div className="form-group">
               <label className="form-label">Correo</label>
               <input className="form-input" type="email" value={form.correo || ''} onChange={e => setForm(f => ({ ...f, correo: e.target.value }))} />
             </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Dirección</label>
+            <input className="form-input" value={form.direccion || ''} onChange={e => setForm(f => ({ ...f, direccion: e.target.value }))} placeholder="Zona, colonia, municipio..." />
           </div>
           <div className="modal-footer" style={{ padding: '16px 0 0', border: 'none' }}>
             <button type="button" className="btn btn-secondary" onClick={() => setShowClienteModal(false)}>Cancelar</button>
